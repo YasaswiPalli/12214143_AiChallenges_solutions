@@ -1,0 +1,22 @@
+# render.yaml  –  Render deployment configuration
+# ──────────────────────────────────────────────────
+# Deploy as a Web Service on render.com
+# Free tier: 512 MB RAM, 0.1 CPU (shared)
+# NOTE: The transformers model (~250 MB) is cached after first download.
+#       Use a paid instance for faster cold-starts.
+
+services:
+  - type: web
+    name: empathy-engine
+    runtime: python
+    plan: free          # change to "starter" for always-on + more RAM
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: TRANSFORMERS_CACHE
+        value: /opt/render/project/.cache/huggingface
+      - key: HF_HOME
+        value: /opt/render/project/.cache/huggingface
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    healthCheckPath: /

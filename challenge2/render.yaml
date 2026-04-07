@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: pitch-visualizer
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt && python -m nltk.downloader punkt punkt_tab averaged_perceptron_tagger
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: ENVIRONMENT
+        value: production
+      - key: GOOGLE_API_KEY
+        sync: false   # Optional: Set in Render dashboard for Gemini LLM prompts (free tier)
+                       # Get free key at https://aistudio.google.com/apikey
+                       # If not set, falls back to rule-based prompt engineering
